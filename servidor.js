@@ -13,10 +13,13 @@ app.use(express.static("public"))
 app.get('/',(req,res) => {
     res.send("OK")
 })
-const mensajes = []
+let mensajes = []
 io.on("connection", (socket) => {
     socket.emit('mensajesActualizados',mensajes)
-
+    socket.on("borrarMensaje",() => {
+        mensajes = []
+        io.sockets.emit('mensajesActualizados',mensajes=[])
+    })
     socket.on('nuevoMensaje',mensaje => {
         mensaje.fecha = new Date().toLocaleString()
         mensajes.push(mensaje)
